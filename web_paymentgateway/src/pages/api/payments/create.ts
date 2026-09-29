@@ -1,10 +1,15 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { ObjectId } from "mongodb";
 import { collections } from "@/lib/checkouts";
-import { productsCollection } from "@/lib/products";
+import { createInvoice, XENDIT_CHANNEL_CODES } from "@/lib/xendit";
 
-// POST /api/payments/create — catat pembayaran sebuah checkout ke collection "payments".
-// Sementara masih SIMULASI (langsung LUNAS); nanti diganti invoice Xendit + webhook.
+function baseUrl(req: NextApiRequest) {
+  if (process.env.APP_URL) return process.env.APP_URL.replace(/\/$/, "");
+  const proto = (req.headers["x-forwarded-proto"] as string)?.split(",")[0] ?? "http";
+  return `${proto}://${req.headers["x-forwarded-host"] ?? req.headers.host}`;
+}
+
+// POST /api/payments/create — buat invoice Xendit untuk sebuah checkout dan simpan ke collection "payments"
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") return res.status(405).json({ message: "Method not allowed" });
 
@@ -15,47 +20,56 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const { checkouts, payments } = await collections();
-    const now = new Date();
+    const checkout = await checkouts.findOne({ _id: new ObjectId(checkoutId) });
+    if (!checkout) return res.status(404).json({ message: "Pesanan tidak ditemukan." });
+    if (checkout.status === "LUNAS") return res.status(409).json({ message: "Pesanan sudah dibayar." });
 
-    // Hanya checkout PENDING yang bisa dibayar, supaya stok tidak terpotong dua kali
-    const checkout = await checkouts.findOneAndUpdate(
-      { _id: new ObjectId(checkoutId), status: "PENDING" },
-      { $set: { status: "LUNAS", paidAt: now } },
-      { returnDocument: "after" }
-    );
-    if (!checkout) {
-      const exists = await checkouts.findOne({ _id: new ObjectId(checkoutId) });
-      return exists
-        ? res.status(409).json({ message: "Pesanan sudah dibayar." })
-        : res.status(404).json({ message: "Pesanan tidak ditemukan." });
+    // Invoice yang masih aktif dipakai ulang supaya tidak dobel
+    const existing = await payments.findOne({ checkoutId: checkout._id, status: "PENDING" });
+    if (existing && (!existing.expiresAt || existing.expiresAt > new Date())) {
+      return res.status(200).json({ paymentId: existing._id.toString(), invoiceUrl: existing.invoiceUrl });
     }
 
-    const payment = await payments.insertOne({
-      checkoutId: checkout._id,
+    const url = baseUrl(req);
+    const channelCode = XENDIT_CHANNEL_CODES[paymentChannel];
+    const invoice = await createInvoice({
       externalId: checkoutId,
       amount: checkout.total,
-      status: "LUNAS",
+      description: `Pesanan Oliv's Kitchen #${checkoutId.slice(-6).toUpperCase()} — Meja ${checkout.tableNumber}`,
+      customerName: checkout.customerName,
+      customerPhone: checkout.customerPhone?.replace(/^0/, "+62").replace(/^62/, "+62") || undefined,
+      items: checkout.items.map((i) => ({ name: i.name, quantity: i.qty, price: i.price })),
+      fees: [
+        { type: "Pajak PB1 (10%)", value: checkout.tax },
+        { type: "Biaya Layanan", value: checkout.serviceFee },
+      ],
+      paymentMethods: channelCode ? [channelCode] : undefined,
+      successRedirectUrl: `${url}/payment-success?checkoutId=${checkoutId}`,
+      failureRedirectUrl: `${url}/payment-success?checkoutId=${checkoutId}`,
+    });
+
+    const now = new Date();
+    const result = await payments.insertOne({
+      checkoutId: checkout._id,
+      externalId: checkoutId,
+      xenditInvoiceId: invoice.id,
+      invoiceUrl: invoice.invoice_url,
+      amount: checkout.total,
+      status: "PENDING",
       paymentMethod: String(paymentMethod ?? ""),
       paymentChannel: String(paymentChannel ?? ""),
-      paidAmount: checkout.total,
-      paidAt: now,
+      expiresAt: invoice.expiry_date ? new Date(invoice.expiry_date) : undefined,
       createdAt: now,
       updatedAt: now,
     });
-    await checkouts.updateOne({ _id: checkout._id }, { $set: { paymentId: payment.insertedId } });
+    await checkouts.updateOne({ _id: checkout._id }, { $set: { paymentId: result.insertedId, status: "PENDING" } });
 
-    // Kurangi stok produk (tidak boleh minus)
-    const products = await productsCollection();
-    for (const item of checkout.items) {
-      if (!ObjectId.isValid(item.productId)) continue;
-      await products.updateOne({ _id: new ObjectId(item.productId) }, [
-        { $set: { stock: { $max: [0, { $subtract: ["$stock", item.qty] }] } } },
-      ]);
-    }
-
-    return res.status(201).json({ paymentId: payment.insertedId.toString(), status: "LUNAS" });
+    return res.status(201).json({ paymentId: result.insertedId.toString(), invoiceUrl: invoice.invoice_url });
   } catch (error) {
     console.error("[payments/create]", error);
-    return res.status(500).json({ message: "Gagal memproses pembayaran." });
+    const message = error instanceof Error && error.message.includes("XENDIT_API_KEY")
+      ? "Payment gateway belum dikonfigurasi (XENDIT_API_KEY)."
+      : "Gagal membuat pembayaran. Coba lagi.";
+    return res.status(500).json({ message });
   }
 }

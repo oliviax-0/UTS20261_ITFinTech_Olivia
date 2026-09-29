@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { ArrowLeft, User, Hash, Loader2, Phone, CreditCard, Landmark, Smartphone, Wallet, Receipt, ShoppingBag, CheckCircle2 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import { useCart } from "@/context/CartContext";
@@ -14,9 +13,9 @@ const fmt = (n: number) =>
 const CONTAINER = "w-full max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12";
 
 const METHODS: Array<{ value: PaymentMethod; label: string; hint: string; icon: typeof CreditCard; channels: PaymentChannel[] }> = [
-  { value: "E-Wallet", label: "E-Wallet", hint: "OVO · Dana · GoPay · QRIS", icon: Smartphone, channels: ["OVO", "Dana", "GoPay", "QRIS"] },
-  { value: "Virtual Account", label: "Virtual Account", hint: "BCA · BNI · Mandiri", icon: Landmark, channels: ["BCA", "BNI", "Mandiri"] },
-  { value: "Kartu Kredit/Debit", label: "Kartu Kredit/Debit", hint: "Simulasi pembayaran cepat", icon: CreditCard, channels: ["QRIS"] },
+  { value: "E-Wallet", label: "E-Wallet", hint: "QRIS · OVO · DANA · ShopeePay", icon: Smartphone, channels: ["QRIS", "OVO", "DANA", "ShopeePay"] },
+  { value: "Virtual Account", label: "Virtual Account", hint: "BCA · BNI · BRI · Mandiri", icon: Landmark, channels: ["BCA", "BNI", "BRI", "Mandiri"] },
+  { value: "Kartu Kredit/Debit", label: "Kartu Kredit/Debit", hint: "Visa · Mastercard · JCB", icon: CreditCard, channels: ["Kartu Kredit"] },
 ];
 
 // Nomor HP Indonesia: diawali 08, 628, atau +628, total 10–15 digit
@@ -27,7 +26,6 @@ const inputClass =
 const labelClass = "block text-sm font-bold text-[#7C4A2D] mb-2";
 
 export default function PaymentPage() {
-  const router = useRouter();
   const { items, subtotal, clearCart } = useCart();
   const [form, setForm] = useState({ customerName: "", tableNumber: "", customerPhone: "" });
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("E-Wallet");
@@ -68,7 +66,7 @@ export default function PaymentPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
-      // 2) Catat pembayaran ke collection "payments"
+      // 2) Buat invoice Xendit + simpan ke collection "payments"
       const payRes = await fetch("/api/payments/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -76,12 +74,14 @@ export default function PaymentPage() {
       });
       const payData = await payRes.json();
       if (!payRes.ok) throw new Error(payData.message);
+      // 3) Arahkan ke halaman pembayaran Xendit; status LUNAS nanti di-update lewat webhook
       addCheckoutToHistory(data.checkoutId);
       clearCart();
-      router.push(`/payment-success?checkoutId=${data.checkoutId}`);
+      window.location.href = payData.invoiceUrl;
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Terjadi kesalahan.");
-    } finally { setLoading(false); }
+      setLoading(false); // saat sukses tetap loading sampai halaman Xendit terbuka
+    }
   };
 
   return (
@@ -226,7 +226,7 @@ export default function PaymentPage() {
                 disabled={loading || !items.length}
                 className="mt-8 w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-white font-bold text-lg shadow-md hover:shadow-lg transition active:scale-95 bg-orange-500 hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? <><Loader2 size={20} className="animate-spin" /> Memproses...</> : <><CheckCircle2 size={20} /> Konfirmasi &amp; Bayar</>}
+                {loading ? <><Loader2 size={20} className="animate-spin" /> Mengarahkan ke Xendit...</> : <><CheckCircle2 size={20} /> Bayar dengan Xendit</>}
               </button>
             </aside>
           </form>

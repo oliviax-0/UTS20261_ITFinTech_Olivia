@@ -10,14 +10,17 @@ export interface Product {
 
 export type PaymentMethod = "Kartu Kredit/Debit" | "E-Wallet" | "Virtual Account";
 
+// Nama channel yang tampil di aplikasi; kode Xendit-nya ada di lib/xendit.ts
 export type PaymentChannel =
-  | "QRIS"
   | "OVO"
-  | "Dana"
-  | "GoPay"
+  | "DANA"
+  | "ShopeePay"
+  | "QRIS"
   | "BCA"
   | "BNI"
-  | "Mandiri";
+  | "BRI"
+  | "Mandiri"
+  | "Kartu Kredit";
 
 export interface CartItem {
   product: Product;
