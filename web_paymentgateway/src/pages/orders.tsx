@@ -3,7 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { ArrowLeft, ChevronRight, History, Loader2 } from "lucide-react";
 import Navbar from "@/components/Navbar";
-import { getOrderHistory } from "@/lib/orderHistory";
+import { getCheckoutHistory } from "@/lib/checkoutHistory";
 import { OrderItem } from "@/types";
 
 const fmt = (n: number) =>
@@ -22,8 +22,9 @@ interface OrderRow {
 }
 
 const STATUS_STYLE: Record<string, string> = {
-  Lunas: "bg-green-50 text-green-600",
-  Pending: "bg-amber-50 text-amber-600",
+  LUNAS: "bg-green-50 text-green-600",
+  PENDING: "bg-amber-50 text-amber-600",
+  EXPIRED: "bg-gray-100 text-gray-500",
 };
 
 export default function OrdersPage() {
@@ -31,9 +32,9 @@ export default function OrdersPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const ids = getOrderHistory();
+    const ids = getCheckoutHistory();
     const load: Promise<OrderRow[]> = ids.length
-      ? fetch(`/api/orders?ids=${ids.join(",")}`).then(async (res) => {
+      ? fetch(`/api/checkout?ids=${ids.join(",")}`).then(async (res) => {
           const data = await res.json();
           if (!res.ok) throw new Error(data.message);
           return data;
@@ -86,7 +87,7 @@ export default function OrdersPage() {
                 return (
                   <Link
                     key={order._id}
-                    href={`/payment-success?orderId=${order._id}`}
+                    href={`/payment-success?checkoutId=${order._id}`}
                     className="group block bg-white rounded-3xl shadow-sm hover:shadow-md transition-shadow p-5 md:p-6"
                   >
                     <div className="flex items-start justify-between gap-4">

@@ -1,8 +1,8 @@
-// Riwayat pesanan disimpan per perangkat (belum ada login), berisi daftar orderId terbaru dulu
+// Riwayat pesanan disimpan per perangkat (belum ada login), berisi daftar checkoutId terbaru dulu
 const KEY = "kedai-nongkrong-orders";
 const MAX = 50;
 
-export function getOrderHistory(): string[] {
+export function getCheckoutHistory(): string[] {
   try {
     const ids = JSON.parse(window.localStorage.getItem(KEY) ?? "[]");
     return Array.isArray(ids) ? ids.filter((id) => typeof id === "string") : [];
@@ -11,9 +11,9 @@ export function getOrderHistory(): string[] {
   }
 }
 
-export function addOrderToHistory(orderId: string) {
+export function addCheckoutToHistory(checkoutId: string) {
   try {
-    const ids = [orderId, ...getOrderHistory().filter((id) => id !== orderId)].slice(0, MAX);
+    const ids = [checkoutId, ...getCheckoutHistory().filter((id) => id !== checkoutId)].slice(0, MAX);
     window.localStorage.setItem(KEY, JSON.stringify(ids));
   } catch {
     // localStorage tidak tersedia (mis. private mode) — riwayat dilewati saja

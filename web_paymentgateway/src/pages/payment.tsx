@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { ArrowLeft, User, Hash, Loader2, Phone, CreditCard, Landmark, Smartphone, Wallet, Receipt, ShoppingBag, CheckCircle2 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import { useCart } from "@/context/CartContext";
-import { addOrderToHistory } from "@/lib/orderHistory";
+import { addCheckoutToHistory } from "@/lib/checkoutHistory";
 import { PaymentChannel, PaymentMethod } from "@/types";
 
 const fmt = (n: number) =>
@@ -57,27 +57,28 @@ export default function PaymentPage() {
     if (!items.length) { setError("Keranjang kosong."); return; }
     setLoading(true);
     try {
-      const res = await fetch("/api/orders/create", {
+      // 1) Simpan pesanan ke collection "checkouts"
+      const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           items: items.map((i) => ({ productId: i.product._id, name: i.product.name, price: i.product.price, qty: i.qty, note: i.note?.trim() ?? "" })),
           customerName: form.customerName.trim(), tableNumber: form.tableNumber.trim(), customerPhone: form.customerPhone.replace(/[\s-]/g, ""),
-          subtotal, serviceFee, tax, total, paymentMethod, paymentChannel,
         }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
-      const payRes = await fetch(`/api/orders/${data.orderId}/pay`, {
+      // 2) Catat pembayaran ke collection "payments"
+      const payRes = await fetch("/api/payments/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ paymentMethod, paymentChannel }),
+        body: JSON.stringify({ checkoutId: data.checkoutId, paymentMethod, paymentChannel }),
       });
       const payData = await payRes.json();
       if (!payRes.ok) throw new Error(payData.message);
-      addOrderToHistory(data.orderId);
+      addCheckoutToHistory(data.checkoutId);
       clearCart();
-      router.push(`/payment-success?orderId=${data.orderId}`);
+      router.push(`/payment-success?checkoutId=${data.checkoutId}`);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Terjadi kesalahan.");
     } finally { setLoading(false); }

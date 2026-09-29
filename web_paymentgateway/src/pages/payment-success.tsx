@@ -2,10 +2,9 @@ import React from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { GetServerSideProps } from "next";
-import { ObjectId } from "mongodb";
 import { ArrowLeft, CheckCircle2, Hash, Phone, Receipt, ShoppingBag, User, Wallet } from "lucide-react";
 import Navbar from "@/components/Navbar";
-import { connectToDatabase } from "@/lib/mongodb";
+import { getCheckoutDetail } from "@/lib/checkouts";
 import { OrderItem } from "@/types";
 
 const fmt = (n: number) =>
@@ -24,7 +23,7 @@ interface OrderDetail {
   paymentMethod: string;
   paymentChannel: string;
   status: string;
-  paidAt?: string;
+  paidAt?: string | null;
 }
 
 function InfoRow({ icon: Icon, label, value }: { icon: typeof User; label: string; value: string }) {
@@ -152,13 +151,22 @@ export default function PaymentSuccessPage({ orderId, order }: { orderId: string
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  const orderId = typeof query.orderId === "string" ? query.orderId : null;
-  if (!orderId || !ObjectId.isValid(orderId)) return { props: { orderId, order: null } };
+  const raw = query.checkoutId ?? query.orderId; // orderId: link lama
+  const orderId = typeof raw === "string" ? raw : null;
+  if (!orderId) return { props: { orderId, order: null } };
 
   try {
-    const db = await connectToDatabase();
-    const doc = await db.collection("orders").findOne({ _id: new ObjectId(orderId) });
-    return { props: { orderId, order: doc ? JSON.parse(JSON.stringify(doc)) : null } };
+    // Data pesanan dari "checkouts", metode bayar dari "payments"
+    const detail = await getCheckoutDetail(orderId);
+    if (!detail) return { props: { orderId, order: null } };
+    const { checkout, payment } = detail;
+    const order: OrderDetail = {
+      ...checkout,
+      paymentMethod: payment?.paymentMethod ?? "-",
+      paymentChannel: payment?.paidChannel ?? payment?.paymentChannel ?? "-",
+      paidAt: checkout.paidAt ?? payment?.paidAt ?? null,
+    };
+    return { props: { orderId, order } };
   } catch (error) {
     console.error("[payment-success] gagal mengambil pesanan", error);
     return { props: { orderId, order: null } };
