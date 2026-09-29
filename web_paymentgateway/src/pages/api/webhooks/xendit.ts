@@ -9,9 +9,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method !== "POST") return res.status(405).json({ message: "Method not allowed" });
 
   // Pastikan request benar-benar dari Xendit
-  const token = process.env.XENDIT_WEBHOOK_TOKEN;
-  if (!token || req.headers["x-callback-token"] !== token) {
-    return res.status(401).json({ message: "Invalid callback token" });
+  // trim + buang tanda kutip: nilai env yang di-paste di Vercel sering ikut spasi/newline
+  const token = process.env.XENDIT_WEBHOOK_TOKEN?.trim().replace(/^["']|["']$/g, "");
+  const received = String(req.headers["x-callback-token"] ?? "").trim();
+  if (!token || received !== token) {
+    // tokenConfigured membantu debug: false = env belum terbaca di deployment ini
+    return res.status(401).json({ message: "Invalid callback token", tokenConfigured: Boolean(token) });
   }
 
   try {
