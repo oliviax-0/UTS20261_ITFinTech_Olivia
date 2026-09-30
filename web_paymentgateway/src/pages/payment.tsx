@@ -228,7 +228,7 @@ export default function PaymentPage() {
                 disabled={loading || !items.length}
                 className="mt-8 w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-white font-bold text-lg shadow-md hover:shadow-lg transition active:scale-95 bg-orange-500 hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? <><Loader2 size={20} className="animate-spin" /> Mengarahkan ke Xendit...</> : <><CheckCircle2 size={20} /> Bayar dengan Xendit</>}
+                {loading ? <><Loader2 size={20} className="animate-spin" /> Mengarahkan ke Xendit...</> : <><CheckCircle2 size={20} /> Bayar Sekarang</>}
               </button>
             </aside>
           </form>
