@@ -107,14 +107,14 @@ export default function PaymentPage() {
                     <label className={labelClass}>Nama <span className="text-red-500">*</span></label>
                     <div className="relative">
                       <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-orange-500" />
-                      <input type="text" name="customerName" value={form.customerName} onChange={handleChange} placeholder="Contoh: Olivia" className={inputClass} />
+                      <input type="text" name="customerName" value={form.customerName} onChange={handleChange} placeholder="John Doe" className={inputClass} />
                     </div>
                   </div>
                   <div>
                     <label className={labelClass}>Nomor Meja <span className="text-red-500">*</span></label>
                     <div className="relative">
                       <Hash size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-orange-500" />
-                      <input type="text" name="tableNumber" value={form.tableNumber} onChange={handleChange} placeholder="Contoh: 5 / Take Away" className={inputClass} />
+                      <input type="text" name="tableNumber" value={form.tableNumber} onChange={handleChange} placeholder="5" className={inputClass} />
                     </div>
                   </div>
                   <div className="md:col-span-2">

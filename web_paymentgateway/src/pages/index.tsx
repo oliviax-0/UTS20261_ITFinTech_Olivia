@@ -54,15 +54,17 @@ export default function Home({ initialProducts, dbError }: { initialProducts: Pr
 
         {/* Hero Section - Full width, bawah melengkung */}
         <div className="pb-12">
-          <div className="relative overflow-hidden bg-gradient-to-r from-orange-500 via-orange-400 to-amber-400 rounded-b-[3rem] md:rounded-b-[4rem]">
-            <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-white/10"></div>
-            <div className="absolute -bottom-20 -left-10 w-56 h-56 rounded-full bg-white/10"></div>
+          <div className="relative overflow-hidden bg-[#F07316] rounded-b-[3rem] md:rounded-b-[4rem]">
             <div className="relative max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 pt-16 pb-24 md:pt-24 md:pb-32 text-center flex flex-col items-center">
-              <h1 className="text-5xl md:text-7xl font-black text-white mb-4 tracking-tight drop-shadow-sm">
-                Kedai Nongkrong Murah
+              <h1 className="font-poppins text-5xl sm:text-6xl md:text-8xl font-extrabold text-white uppercase leading-[0.95] tracking-tight">
+                Ngemil.
+                <br />
+                Ngopi.
+                <br />
+                Nongkrong.
               </h1>
-              <p className="text-white/90 text-base md:text-xl max-w-2xl mx-auto font-medium">
-                Cemilan kriuk & minuman es botolan segar. Teman setia buat nongkrong santai hari ini!
+              <p className="font-poppins mt-6 text-[#FDE3C8] text-lg md:text-2xl font-medium">
+                Semua ada di Oliv&apos;s Kitchen
               </p>
             </div>
           </div>

@@ -1,5 +1,5 @@
 /* Font harus di-import paling atas, sebelum aturan lain */
-@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Poppins:wght@400;500;600;700;800&display=swap");
 @import "tailwindcss";
 
 /* ---------- Warna & font Oliv's Kitchen ---------- */
@@ -22,8 +22,9 @@
   --color-olive-line: var(--olive-line);
   --color-butter: var(--butter);
   --color-muted: var(--muted);
-  --font-sans: "DM Sans", system-ui, sans-serif;
+  --font-sans: "Poppins", system-ui, sans-serif;
   --font-display: "Bricolage Grotesque", system-ui, sans-serif;
+  --font-poppins: "Poppins", system-ui, sans-serif;
 }
 
 /* ---------- Dasar ---------- */
@@ -47,12 +48,15 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-h1,
-h2,
-h3,
-.display {
-  font-family: var(--font-display);
-  letter-spacing: -0.01em;
+/* Di dalam @layer base supaya kelas Tailwind (mis. font-poppins) bisa menimpanya */
+@layer base {
+  h1,
+  h2,
+  h3,
+  .display {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
 }
 
 ::selection {

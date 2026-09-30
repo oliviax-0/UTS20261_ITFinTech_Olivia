@@ -57,7 +57,7 @@ export default function ProductCard({
       </div>
 
       {/* Product Info */}
-      <h3 className="font-bold text-gray-800 text-lg md:text-xl leading-tight mb-1 line-clamp-1">
+      <h3 className="font-poppins font-bold text-gray-800 text-lg md:text-xl leading-tight mb-1 line-clamp-1">
         {product.name}
       </h3>
 

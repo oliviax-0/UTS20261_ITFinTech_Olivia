@@ -22,7 +22,7 @@ export default function CheckoutPage() {
         {items.length === 0 ? (
           <>
             <main className="w-full max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 pt-10 pb-20 flex-1">
-              <h1 className="text-4xl md:text-5xl font-black text-[#3B1F0E] mb-8">Pesanan Kamu</h1>
+              <h1 className="text-4xl md:text-5xl font-black text-[#3B1F0E] mb-8">Keranjang Saya</h1>
               <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl shadow-sm border border-amber-100/50">
                 <ShoppingCart size={64} className="mb-6 text-orange-500 opacity-80" />
                 <h3 className="text-[#3B1F0E] font-black text-2xl mb-2">Keranjang Masih Kosong</h3>
@@ -44,7 +44,7 @@ export default function CheckoutPage() {
               <Link href="/" className="inline-flex items-center gap-2 text-[#A0714F] hover:text-[#3B1F0E] mb-4 font-semibold transition text-base">
                 <ArrowLeft size={18} /> Kembali ke Menu
               </Link>
-              <h1 className="text-4xl md:text-5xl font-black text-[#3B1F0E] mb-8">Pesanan Kamu</h1>
+              <h1 className="text-4xl md:text-5xl font-black text-[#3B1F0E] mb-8">Keranjang Saya</h1>
 
               <div className="grid lg:grid-cols-3 gap-8 items-start">
                 <div className="lg:col-span-2">
