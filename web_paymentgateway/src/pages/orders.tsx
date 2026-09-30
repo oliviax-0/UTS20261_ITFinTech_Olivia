@@ -53,11 +53,11 @@ export default function OrdersPage() {
       <Head><title>Riwayat Pesanan — Kedai Nongkrong</title></Head>
       <div className="min-h-screen flex flex-col bg-[#FDF6EC] font-sans selection:bg-[#C4855A] selection:text-white">
         <Navbar />
-        <main className="w-full max-w-4xl mx-auto px-4 sm:px-8 pt-10 pb-20 flex-1">
+        <main className="w-full max-w-4xl mx-auto px-4 sm:px-8 pt-6 sm:pt-10 pb-16 sm:pb-20 flex-1">
           <Link href="/" className="inline-flex items-center gap-2 text-[#A0714F] hover:text-[#3B1F0E] mb-4 font-semibold transition text-base">
             <ArrowLeft size={18} /> Kembali ke Menu
           </Link>
-          <h1 className="text-4xl md:text-5xl font-black text-[#3B1F0E] mb-8">Riwayat Pesanan</h1>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#3B1F0E] mb-6 sm:mb-8">Riwayat Pesanan</h1>
 
           {orders === null ? (
             <div className="flex items-center justify-center gap-2 py-20 text-[#A0714F]">
@@ -88,12 +88,12 @@ export default function OrdersPage() {
                   <Link
                     key={order._id}
                     href={`/payment-success?checkoutId=${order._id}`}
-                    className="group block bg-white rounded-3xl shadow-sm hover:shadow-md transition-shadow p-5 md:p-6"
+                    className="group block bg-white rounded-3xl shadow-sm hover:shadow-md transition-shadow p-4 sm:p-5 md:p-6"
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-2 mb-1">
-                          <p className="text-xl font-black text-orange-500 tracking-wider">#{order._id.slice(-6).toUpperCase()}</p>
+                          <p className="text-lg sm:text-xl font-black text-orange-500 tracking-wider">#{order._id.slice(-6).toUpperCase()}</p>
                           <span className={`rounded-full px-3 py-0.5 text-sm font-bold ${STATUS_STYLE[order.status] ?? "bg-gray-100 text-gray-600"}`}>
                             {order.status}
                           </span>

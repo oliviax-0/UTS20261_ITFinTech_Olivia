@@ -30,9 +30,9 @@ export default function ProductCard({
   };
 
   return (
-    <div className="bg-white p-5 rounded-3xl shadow-sm hover:shadow-md transition-shadow group flex flex-col">
+    <div className="bg-white p-3 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm hover:shadow-md transition-shadow group flex flex-col">
       {/* Product Image */}
-      <div className="relative aspect-square w-full rounded-2xl overflow-hidden mb-4 bg-orange-50 flex items-center justify-center">
+      <div className="relative aspect-square w-full rounded-xl sm:rounded-2xl overflow-hidden mb-3 sm:mb-4 bg-orange-50 flex items-center justify-center">
         {product.image ? (
           <img
             src={product.image}
@@ -57,18 +57,18 @@ export default function ProductCard({
       </div>
 
       {/* Product Info */}
-      <h3 className="font-poppins font-bold text-gray-800 text-lg md:text-xl leading-tight mb-1 line-clamp-1">
+      <h3 className="font-poppins font-bold text-gray-800 text-base sm:text-lg md:text-xl leading-tight mb-1 line-clamp-1">
         {product.name}
       </h3>
 
-      <p className="text-gray-400 text-sm mb-3 line-clamp-2">
+      <p className="text-gray-400 text-xs sm:text-sm mb-2 sm:mb-3 line-clamp-2">
         {product.description}
       </p>
 
       {/* Price + Quantity Controls */}
-      <div className="mt-auto pt-3 flex items-center justify-between gap-2">
+      <div className="mt-auto pt-2 sm:pt-3 flex flex-wrap items-center justify-between gap-2">
         <span
-          className="font-bold text-orange-500 text-lg md:text-xl"
+          className="font-bold text-orange-500 text-base sm:text-lg md:text-xl"
           suppressHydrationWarning
         >
           Rp{product.price?.toLocaleString("id-ID")}
@@ -78,16 +78,16 @@ export default function ProductCard({
           <button
             onClick={handleIncrease}
             disabled={soldOut}
-            className="flex-shrink-0 w-11 h-11 rounded-xl bg-orange-500 text-white flex items-center justify-center shadow-sm hover:bg-orange-600 active:scale-95 transition disabled:opacity-40 disabled:cursor-not-allowed"
+            className="flex-shrink-0 w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-orange-500 text-white flex items-center justify-center shadow-sm hover:bg-orange-600 active:scale-95 transition disabled:opacity-40 disabled:cursor-not-allowed"
             aria-label={`Tambah ${product.name} ke keranjang`}
           >
             <Plus size={20} />
           </button>
         ) : (
-          <div className="flex items-center gap-2 bg-orange-50 rounded-xl p-1">
+          <div className="flex items-center gap-1 sm:gap-2 bg-orange-50 rounded-xl p-1">
             <button
               onClick={handleDecrease}
-              className="w-8 h-8 rounded-lg bg-white text-orange-500 flex items-center justify-center hover:bg-orange-100 active:scale-95 transition"
+              className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-white text-orange-500 flex items-center justify-center hover:bg-orange-100 active:scale-95 transition"
               aria-label={`Kurangi ${product.name}`}
             >
               <Minus size={16} />
@@ -100,7 +100,7 @@ export default function ProductCard({
             <button
               onClick={handleIncrease}
               disabled={atLimit}
-              className="w-8 h-8 rounded-lg bg-orange-500 text-white flex items-center justify-center hover:bg-orange-600 active:scale-95 transition disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-orange-500 text-white flex items-center justify-center hover:bg-orange-600 active:scale-95 transition disabled:opacity-40 disabled:cursor-not-allowed"
               aria-label={`Tambah ${product.name}`}
             >
               <Plus size={16} />
@@ -112,7 +112,7 @@ export default function ProductCard({
       {quantity > 0 && (
         <Link
           href="/checkout"
-          className="mt-3 w-full flex items-center justify-center gap-2 rounded-xl bg-orange-500 py-3 text-base font-bold text-white shadow-sm hover:bg-orange-600 active:scale-95 transition"
+          className="mt-3 w-full flex items-center justify-center gap-2 rounded-xl bg-orange-500 py-2.5 sm:py-3 text-sm sm:text-base font-bold text-white shadow-sm hover:bg-orange-600 active:scale-95 transition"
         >
           <ShoppingCart size={16} /> Lihat Keranjang
         </Link>

@@ -89,17 +89,17 @@ export default function PaymentPage() {
       <Head><title>Pembayaran — Kedai Nongkrong</title></Head>
       <div className="min-h-screen flex flex-col bg-[#FDF6EC] font-sans selection:bg-[#C4855A] selection:text-white">
         <Navbar />
-        <main className={`${CONTAINER} pt-10 pb-20 flex-1`}>
+        <main className={`${CONTAINER} pt-6 sm:pt-10 pb-16 sm:pb-20 flex-1`}>
           <Link href="/checkout" className="inline-flex items-center gap-2 text-[#A0714F] hover:text-[#3B1F0E] mb-4 font-semibold transition text-base">
             <ArrowLeft size={18} /> Kembali ke Keranjang
           </Link>
-          <h1 className="text-4xl md:text-5xl font-black text-[#3B1F0E] mb-8">Pembayaran</h1>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#3B1F0E] mb-6 sm:mb-8">Pembayaran</h1>
 
-          <form onSubmit={handleSubmit} className="grid lg:grid-cols-3 gap-8 items-start">
-            <div className="lg:col-span-2 space-y-8">
+          <form onSubmit={handleSubmit} className="grid lg:grid-cols-3 gap-6 lg:gap-8 items-start">
+            <div className="lg:col-span-2 space-y-6 lg:space-y-8">
               {/* Data Pelanggan */}
-              <section className="bg-white rounded-3xl shadow-sm p-6 md:p-8">
-                <h2 className="text-2xl md:text-3xl font-bold text-[#3B1F0E] mb-6 flex items-center gap-2">
+              <section className="bg-white rounded-2xl sm:rounded-3xl shadow-sm p-5 sm:p-6 md:p-8">
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#3B1F0E] mb-4 sm:mb-6 flex items-center gap-2">
                   <User size={24} className="text-orange-500" /> Data Pelanggan
                 </h2>
                 <div className="grid md:grid-cols-2 gap-5">
@@ -129,11 +129,11 @@ export default function PaymentPage() {
               </section>
 
               {/* Metode Pembayaran */}
-              <section className="bg-white rounded-3xl shadow-sm p-6 md:p-8">
-                <h2 className="text-2xl md:text-3xl font-bold text-[#3B1F0E] mb-6 flex items-center gap-2">
+              <section className="bg-white rounded-2xl sm:rounded-3xl shadow-sm p-5 sm:p-6 md:p-8">
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#3B1F0E] mb-4 sm:mb-6 flex items-center gap-2">
                   <Wallet size={24} className="text-orange-500" /> Metode Pembayaran
                 </h2>
-                <div className="grid sm:grid-cols-3 gap-4">
+                <div className="grid sm:grid-cols-3 gap-3 sm:gap-4">
                   {METHODS.map((option) => {
                     const Icon = option.icon;
                     const active = paymentMethod === option.value;
@@ -145,23 +145,25 @@ export default function PaymentPage() {
                           setPaymentMethod(option.value);
                           setPaymentChannel(option.channels[0]);
                         }}
-                        className={`relative text-left rounded-2xl border-2 p-5 transition active:scale-[0.98] ${
+                        className={`relative text-left rounded-2xl border-2 p-4 sm:p-5 flex items-center gap-3 sm:block transition active:scale-[0.98] ${
                           active ? "border-orange-500 bg-orange-50 shadow-md" : "border-orange-100 bg-white hover:border-orange-300"
                         }`}
                       >
                         {active && <CheckCircle2 size={20} className="absolute top-4 right-4 text-orange-500" />}
-                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-3 ${active ? "bg-orange-500 text-white" : "bg-orange-50 text-orange-500"}`}>
+                        <div className={`w-11 h-11 sm:w-12 sm:h-12 flex-shrink-0 rounded-xl flex items-center justify-center sm:mb-3 ${active ? "bg-orange-500 text-white" : "bg-orange-50 text-orange-500"}`}>
                           <Icon size={24} />
                         </div>
-                        <p className="font-bold text-[#3B1F0E] text-base md:text-lg">{option.label}</p>
-                        <p className="text-sm text-[#A0714F] mt-0.5">{option.hint}</p>
+                        <div className="min-w-0 pr-6 sm:pr-0">
+                          <p className="font-bold text-[#3B1F0E] text-base md:text-lg">{option.label}</p>
+                          <p className="text-sm text-[#A0714F] mt-0.5">{option.hint}</p>
+                        </div>
                       </button>
                     );
                   })}
                 </div>
 
-                <p className={`${labelClass} mt-8`}>Pilih Channel</p>
-                <div className="flex flex-wrap gap-3">
+                <p className={`${labelClass} mt-6 sm:mt-8`}>Pilih Channel</p>
+                <div className="flex flex-wrap gap-2 sm:gap-3">
                   {paymentChannels.map((channel) => {
                     const active = paymentChannel === channel;
                     return (
@@ -169,7 +171,7 @@ export default function PaymentPage() {
                         key={channel}
                         type="button"
                         onClick={() => setPaymentChannel(channel)}
-                        className={`px-6 py-2.5 rounded-full text-base font-bold transition ${
+                        className={`px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-sm sm:text-base font-bold transition ${
                           active ? "bg-orange-500 text-white shadow-md hover:bg-orange-600" : "bg-white text-[#7C4A2D] border-2 border-orange-100 hover:bg-orange-50 hover:text-orange-600"
                         }`}
                       >
@@ -182,7 +184,7 @@ export default function PaymentPage() {
             </div>
 
             {/* Ringkasan */}
-            <aside className="bg-white rounded-3xl shadow-sm p-7 md:p-8 lg:sticky lg:top-28">
+            <aside className="bg-white rounded-2xl sm:rounded-3xl shadow-sm p-5 sm:p-7 md:p-8 lg:sticky lg:top-28">
               <h2 className="font-bold text-[#3B1F0E] mb-6 text-2xl flex items-center gap-2">
                 <Receipt size={20} className="text-orange-500" /> Ringkasan Order
               </h2>

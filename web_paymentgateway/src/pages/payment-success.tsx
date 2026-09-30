@@ -100,7 +100,7 @@ export default function PaymentSuccessPage({
       <Head><title>{`${view.title} — Kedai Nongkrong`}</title></Head>
       <div className="min-h-screen flex flex-col bg-[#FDF6EC] font-sans selection:bg-[#C4855A] selection:text-white">
         <Navbar />
-        <main className="w-full max-w-3xl mx-auto px-4 sm:px-8 pt-10 pb-20 flex-1">
+        <main className="w-full max-w-3xl mx-auto px-4 sm:px-8 pt-6 sm:pt-10 pb-16 sm:pb-20 flex-1">
           <Link href="/orders" className="inline-flex items-center gap-2 text-[#A0714F] hover:text-[#3B1F0E] mb-6 font-semibold transition text-base">
             <ArrowLeft size={18} /> Kembali ke Riwayat Pesanan
           </Link>
@@ -109,7 +109,7 @@ export default function PaymentSuccessPage({
             <div className={`mx-auto mb-5 w-24 h-24 rounded-full bg-gradient-to-br ${view.circle} flex items-center justify-center shadow-lg`}>
               <StatusIcon size={52} className="text-white" strokeWidth={2} />
             </div>
-            <h1 className="text-4xl md:text-5xl font-black text-[#3B1F0E] mb-3">{view.title}</h1>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#3B1F0E] mb-3">{view.title}</h1>
             <p className="text-[#8C5333] text-base md:text-lg max-w-xl mx-auto">{view.text}</p>
             {status === "PENDING" && invoiceUrl && (
               <a
@@ -121,7 +121,7 @@ export default function PaymentSuccessPage({
             )}
           </div>
 
-          <div className="bg-white rounded-3xl shadow-sm p-6 md:p-8">
+          <div className="bg-white rounded-2xl sm:rounded-3xl shadow-sm p-5 sm:p-6 md:p-8">
             {/* Nomor pesanan */}
             <div className="flex flex-wrap items-center justify-between gap-3 pb-6 border-b border-dashed border-orange-200">
               <div>
